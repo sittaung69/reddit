@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommunityRequest;
+use App\Http\Requests\UpdateCommunityRequest;
 use App\Models\Community;
 use App\Models\Topic;
 use Illuminate\Http\Request;
@@ -16,7 +17,9 @@ class CommunityController extends Controller
      */
     public function index()
     {
-        //
+        $communities = Community::where('user_id', auth()->id())->get();
+
+        return view('communities.index', compact('communities'));
     }
 
     /**
@@ -59,34 +62,54 @@ class CommunityController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  Community $community
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Community $community)
     {
-        //
+        if ($community->user_id != auth()->id()) {
+            abort(403);
+        }
+
+        $topics = Topic::all();
+        $community->load('topics');
+
+        return view('communities.edit', compact('community', 'topics'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Community $community
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCommunityRequest $request, Community $community)
     {
-        //
+        if ($community->user_id != auth()->id()) {
+            abort(403);
+        }
+
+        $community->update($request->validated());
+        $community->topics()->sync($request->topics);
+
+        return redirect()->route('communities.index')->with('message', 'Successfully updated!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Community $community
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Community $community)
     {
-        //
+        if ($community->user_id != auth()->id()) {
+            abort(403);
+        }
+
+        $community->delete();
+
+        return redirect()->route('communities.index')->with('message', 'Successfully deleted!');
     }
 }
