@@ -6,7 +6,6 @@ use App\Http\Requests\StoreCommunityRequest;
 use App\Http\Requests\UpdateCommunityRequest;
 use App\Models\Community;
 use App\Models\Topic;
-use Illuminate\Http\Request;
 
 class CommunityController extends Controller
 {
