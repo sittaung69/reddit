@@ -45,10 +45,11 @@
                 <label for="topics" class="col-md-4 col-form-label text-md-right">{{ __('Topics') }}</label>
 
                 <div class="col-md-6">
-                  @foreach ($topics as $topic)
-                    <input type="checkbox" name="topics[]" value="{{ $topic->id }}">
-                    {{ $topic->name }} <br />
-                  @endforeach
+                  <select name="topics[]" class="form-control select2" multiple>
+                    @foreach ($topics as $topic)
+                      <option value="{{ $topic->id }}">{{ $topic->name }}</option>
+                    @endforeach
+                  </select>
                 </div>
               </div>
 
