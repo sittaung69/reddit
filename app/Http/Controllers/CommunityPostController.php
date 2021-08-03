@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Models\Community;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class CommunityPostController extends Controller
@@ -49,12 +50,13 @@ class CommunityPostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  App\Models\Community  $community
+     * @param  App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Community $community, Post $post)
     {
-        //
+        return view('posts.show', compact('post'));
     }
 
     /**
