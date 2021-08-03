@@ -56,40 +56,55 @@ class CommunityPostController extends Controller
      */
     public function show(Community $community, Post $post)
     {
-        return view('posts.show', compact('post'));
+        return view('posts.show', compact('community', 'post'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  App\Models\Community  $community
+     * @param  App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Community $community, Post $post)
     {
-        //
+        if ($post->user_id != auth()->id()) {
+            abort(403);
+        }
+
+        return view('posts.edit', compact('community', 'post'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Http\Requests\StorePostRequest  $request
+     * @param  App\Models\Community  $community
+     * @param  App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StorePostRequest $request, Community $community, Post $post)
     {
-        //
+        if ($post->user_id != auth()->id()) {
+            abort(403);
+        }
+
+        $post->update($request->validated());
+
+        return redirect()->route('communities.posts.show', [$community, $post]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  App\Models\Community  $community
+     * @param  App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Community $community, Post $post)
     {
-        //
+        $post->delete();
+
+        return redirect()->route('communities.show', [$community]);
     }
 }
